@@ -1,14 +1,16 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
+const authRouter = require("./routers/authRouter");
 
 const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
+
+app.use("/api", authRouter);
 
 const port = process.env.PORT || 5000;
 const uri = process.env.MONGODB_URI;
