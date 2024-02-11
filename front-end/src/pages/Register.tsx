@@ -12,6 +12,8 @@ import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { register } from "@/api/features/auth/registerAPI";
+import { useState } from "react";
 
 const initialValues = {
     userName: "",
@@ -39,6 +41,10 @@ const genderOptions = [
 ];
 
 const Register = () => {
+    const [isLoading, setIsLoading] = useState(false);
+    const handleIsLoading = (flag: boolean) => {
+        setIsLoading(flag);
+    }
     const formik = useFormik({
         initialValues,
         validationSchema: yup.object({
@@ -62,12 +68,12 @@ const Register = () => {
             agree: yup.boolean().oneOf([true], "You must agree to the terms"),
         }),
         onSubmit: (values) => {
-            console.log(values);
+            register(values, handleIsLoading);
         },
     });
     return (
         <div className="bg-gray-100 w-screen min-h-screen flex justify-center items-center">
-            <Card className="w-[450px] shadow-2xl">
+            <Card className="w-[450px] shadow-2xl m-4">
                 <CardHeader>
                     <CardTitle className="text-3xl text-center">Register</CardTitle>
                 </CardHeader>
@@ -194,6 +200,7 @@ const Register = () => {
                                 </div>
                             </label>
                             <Input
+                                type="password"
                                 id="password"
                                 name="password"
                                 placeholder="Enter your password"
@@ -235,9 +242,9 @@ const Register = () => {
                             <Button
                                 type="submit"
                                 className="w-full"
-                                disabled={!formik.isValid}
+                                disabled={!formik.isValid || isLoading}
                             >
-                                Register
+                                {isLoading ? "Loading..." : "Register"}
                             </Button>
                         </div>
                         <div>

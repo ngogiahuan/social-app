@@ -2,15 +2,16 @@ import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { login } from "@/api/features/auth/loginAPI";
+import { useAppDispatch } from "@/redux/hook";
+import { useState } from "react";
 
 const initialValues = {
     email: "",
@@ -18,6 +19,11 @@ const initialValues = {
 };
 
 const Login = () => {
+    const dispatch = useAppDispatch();
+    const [isLoading, setIsLoading] = useState(false);
+    const handleIsLoading = (flag: boolean) => {
+        setIsLoading(flag);
+    }
     const formik = useFormik({
         initialValues,
         validationSchema: yup.object({
@@ -31,12 +37,12 @@ const Login = () => {
                 .min(8, "Password is must be at least 8 characters"),
         }),
         onSubmit: (values) => {
-            console.log(values);
+            login(values.email, values.password, dispatch, handleIsLoading)
         },
     });
     return (
         <div className="bg-gray-100 w-screen min-h-screen flex justify-center items-center">
-            <Card className="w-[400px] shadow-2xl">
+            <Card className="w-[400px] shadow-2xl m-4">
                 <CardHeader>
                     <CardTitle className="text-3xl text-center">Login</CardTitle>
                 </CardHeader>
@@ -89,7 +95,7 @@ const Login = () => {
                                 type="checkbox"
                                 id="remember"
                                 name="remember"
-                                className=" peer h-4 w-4 border-gray-300 border border-2 rounded-sm text-primary focus:ring-primary checked:bg-primary transition-all duration-200 ease-in-out checked:border-transparent "
+                                className=" peer h-4 w-4 border-gray-300 border rounded-sm text-primary focus:ring-primary checked:bg-primary transition-all duration-200 ease-in-out checked:border-transparent "
                             />
                             <label
                                 htmlFor="remember"
@@ -99,8 +105,8 @@ const Login = () => {
                             </label>
                         </div>
                         <div>
-                            <Button type="submit" className="w-full">
-                                Login
+                            <Button type="submit" className="w-full" disabled={isLoading}>
+                                {isLoading ? "Loading..." : "Login"}
                             </Button>
                         </div>
                         <div>
