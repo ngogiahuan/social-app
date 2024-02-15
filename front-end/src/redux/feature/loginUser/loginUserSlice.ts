@@ -22,6 +22,7 @@ export const LoginUserStateSlice = createSlice({
     ) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
+      console.log("state: ", state);
     },
     logout: (state) => {
       state.user = null;
