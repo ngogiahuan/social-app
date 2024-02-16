@@ -12,6 +12,7 @@ import * as yup from "yup";
 import { login } from "@/api/features/auth/loginAPI";
 import { useAppDispatch } from "@/redux/hook";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const initialValues = {
     email: "",
@@ -21,6 +22,7 @@ const initialValues = {
 
 const Login = () => {
     const dispatch = useAppDispatch();
+    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const handleIsLoading = (flag: boolean) => {
         setIsLoading(flag);
@@ -37,8 +39,9 @@ const Login = () => {
                 .required("Password is required")
                 .min(8, "Password is must be at least 8 characters"),
         }),
-        onSubmit: (values) => {
-            login(values.email, values.password, dispatch, handleIsLoading)
+        onSubmit: async (values) => {
+            await login(values.email, values.password, dispatch, handleIsLoading)
+            navigate("/");
         },
     });
     return (
@@ -114,6 +117,9 @@ const Login = () => {
                             Need an account?{" "}
                             <Link to="/register" className="text-blue-500">
                                 Register
+                            </Link>{" "}
+                            <Link to="/" className="text-blue-500">
+                                Home
                             </Link>
                         </div>
                     </form>
